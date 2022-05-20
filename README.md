@@ -1,3 +1,6 @@
+[![Java CI with Gradle](https://github.com/rblcoder/daily_sleep_tracker/actions/workflows/gradle.yml/badge.svg)](https://github.com/rblcoder/daily_sleep_tracker/actions/workflows/gradle.yml)
+
+
 # DevProjects - Daily sleep tracker web app
 
 This is an open source project from [DevProjects](http://www.codementor.io/projects). Feedback and questions are welcome!
