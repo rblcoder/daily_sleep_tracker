@@ -14,17 +14,18 @@ Screenshots of your app and/or a link to your live demo
 from terminal:
 
 psql postgres
+CREATE ROLE sleep WITH LOGIN PASSWORD ‘sleep’;
 
-CREATE ROLE sleep WITH LOGIN PASSWORD 'somepassword';
-
-ALTER ROLE sleep CREATEDB; 
-
-\q
-
+\q	
 psql postgres -U sleep
 
 CREATE DATABASE sleep;
 
+ALTER ROLE library CREATEDB;
+
+psql postgres -U sleep
+
+CREATE DATABASE sleep;
 
 ## Installation
 I used Java 8, Intellij Idea and a local postgreSQL instance
