@@ -1,16 +1,16 @@
-package com.company.sleep.service;
+package com.company.sleep.service.impl;
 
 import com.company.sleep.exception.RecordNotFoundException;
 import com.company.sleep.model.SleepInfo;
 import com.company.sleep.repository.SleepInfoRepository;
+import com.company.sleep.service.SleepInfoService;
 import org.springframework.stereotype.Service;
-
 
 import java.time.Duration;
 import java.util.List;
 
 @Service
-public class SleepInfoServiceImpl implements  SleepInfoService{
+public class SleepInfoServiceImpl implements SleepInfoService {
 
     private final SleepInfoRepository sleepInfoRepository;
 
@@ -50,5 +50,11 @@ public class SleepInfoServiceImpl implements  SleepInfoService{
     @Override
     public List<SleepInfo> getAllEntries() {
         return sleepInfoRepository.findAll();
+    }
+
+    @Override
+    public void deleteEntryById(Long id) {
+        SleepInfo dbSleepInfo = sleepInfoRepository.findById(id).orElseThrow(RecordNotFoundException::new);
+        sleepInfoRepository.delete(dbSleepInfo);
     }
 }

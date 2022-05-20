@@ -6,7 +6,12 @@ import java.util.List;
 
 public interface SleepInfoService {
     SleepInfo createEntry(SleepInfo sleepInfo);
+
     SleepInfo getEntryById(Long id);
+
     SleepInfo updateEntry(SleepInfo sleepInfo, Long id);
+
     List<SleepInfo> getAllEntries();
+
+    void deleteEntryById(Long id);
 }

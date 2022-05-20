@@ -1,7 +1,6 @@
 package com.company.sleep.model;
 
 import lombok.*;
-import lombok.Builder;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -14,8 +13,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Table(name="sleep_info_entries")
-public class SleepInfo  {
+@Table(name = "sleep_info_entries")
+public class SleepInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
