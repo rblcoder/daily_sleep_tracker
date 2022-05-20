@@ -1,7 +1,3 @@
-# daily_sleep_tracker
-
-
-
 # DevProjects - Daily sleep tracker web app
 
 This is an open source project from [DevProjects](http://www.codementor.io/projects). Feedback and questions are welcome!
@@ -31,7 +27,7 @@ CREATE DATABASE sleep;
 
 
 ## Installation
-Instructions for other developers on how to install and run your code on their local environment.
+I used Java 8, Intellij Idea and a local postgreSQL instance
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
