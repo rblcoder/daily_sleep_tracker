@@ -8,7 +8,41 @@
 </head>
 <body>
 <h1>Sleep Tracker</h1>
+<div th:if="${!entries.isEmpty()}">
+    <table>
+        <tr>
+            <th>Sleep</th>
+            <th>Wake Up</th>
+            <th>Hours</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+        <tr th:each="entry:${entries}">
+            <td th:text="${entry.getSleepDateTime()}"></td>
+            <td th:text="${entry.getGetUpDateTime()}"></td>
+            <td th:text="${entry.getHours()}"></td>
 
+            <td>
+
+                <span th:fragment>
+                <span th:if="${entry.getStatus()==T(com.tw.vapsi.biblioteca.model.entryStatus).BORROWED}">
+                    Borrowed
+                </span>
+
+                <span th:if="${entry.getStatus()==T(com.tw.vapsi.biblioteca.model.entryStatus).AVAILABLE}">
+
+
+                <form th:action="@{/entrys/{entryId}/checkout(entryId=${entry.getId()})}"
+                      th:method="put">
+                    <input onclick="this.form.submit()"
+                           type="button" value="Check Out">
+                </form>
+                </span>
+                </span>
+            </td>
+        </tr>
+    </table>
+</div>
 
 </body>
 </html>

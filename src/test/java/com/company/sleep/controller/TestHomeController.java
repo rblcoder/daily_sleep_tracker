@@ -32,4 +32,21 @@ public class TestHomeController {
                 .andExpect(content().string(containsString("Sleep Tracker")));
     }
 
+    @Test
+    @WithMockUser
+    void shouldLoadCreateEntryPage() throws Exception {
+
+        mockMvc.perform(get("/create"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Create Entry for Sleep Tracker")));
+    }
+
+    @Test
+    @WithMockUser
+    void shouldLoadUpdateEntryPage() throws Exception {
+
+        mockMvc.perform(get("/update/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Update Entry for Sleep Tracker")));
+    }
 }
