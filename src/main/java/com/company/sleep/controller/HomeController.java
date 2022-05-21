@@ -28,8 +28,15 @@ public class HomeController {
     }
 
     @PostMapping("/")
-    public String saveEntry(@ModelAttribute("sleepInfo") SleepInfo sleepInfo) {
+    public String saveEntry(@ModelAttribute("sleepInfo") SleepInfo sleepInfo, Model model) {
+        String message = sleepInfoService
+                .dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime());
+        if (message != ""){
+            model.addAttribute("message", message);
+            return "errors";
+        }
         sleepInfoService.createEntry(sleepInfo);
+
         return "redirect:/";
     }
 

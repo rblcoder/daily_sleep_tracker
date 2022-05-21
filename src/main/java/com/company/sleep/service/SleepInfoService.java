@@ -2,6 +2,7 @@ package com.company.sleep.service;
 
 import com.company.sleep.model.SleepInfo;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SleepInfoService {
@@ -14,4 +15,6 @@ public interface SleepInfoService {
     List<SleepInfo> getAllEntries();
 
     void deleteEntryById(Long id);
+
+    String dateValidation(LocalDateTime sleepDateTime, LocalDateTime getUpDateTime);
 }

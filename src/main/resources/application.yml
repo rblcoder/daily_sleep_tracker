@@ -15,3 +15,6 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   thymeleaf:
     cache: false
+server:
+  error:
+    include-exception: true

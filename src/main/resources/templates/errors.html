@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+          crossorigin="anonymous">
+    <title>An Error has Occurred</title>
+
+</head>
+
+<body>
+<div class="mx-auto row h-100 w-50 p-5" >
+    <div class="col-sm-12 my-auto">
+        <div>
+        <h1> An Error has Occurred</h1>
+            <div>
+                <h2 th:text="${message}"> </h2>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
