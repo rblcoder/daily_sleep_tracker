@@ -1,9 +1,10 @@
 package com.company.sleep.model;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -21,13 +22,14 @@ public class SleepInfo {
     private Long id;
 
     @Column(nullable = false)
-    private Timestamp sleepDateTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime sleepDateTime;
 
-
-    private Timestamp getUpDateTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+    private LocalDateTime getUpDateTime;
     private Long hours;
 
-    public SleepInfo(Timestamp sleepDateTime) {
+    public SleepInfo(LocalDateTime sleepDateTime) {
         this.sleepDateTime = sleepDateTime;
 
     }

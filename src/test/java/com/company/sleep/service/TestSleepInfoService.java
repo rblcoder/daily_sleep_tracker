@@ -9,7 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,16 +27,24 @@ public class TestSleepInfoService {
     @InjectMocks
     private SleepInfoServiceImpl sleepInfoService;
 
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     @Test
     void givenNewRecord_whenSaveRecord_thenReturnSavedRecord() {
-        SleepInfo saveSleepInfo = SleepInfo.builder()
-                .id(1L)
-                .sleepDateTime(Timestamp.valueOf("2022-01-01 21:20:00"))
+
+        SleepInfo sleepInfo = SleepInfo.builder()
+                .id(null)
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
                 .build();
 
-        when(sleepInfoRepository.save(saveSleepInfo)).thenReturn(saveSleepInfo);
+        SleepInfo saveSleepInfo = SleepInfo.builder()
+                .id(1L)
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .build();
 
-        SleepInfo actualEntry = sleepInfoService.createEntry(saveSleepInfo);
+        when(sleepInfoRepository.save(sleepInfo)).thenReturn(saveSleepInfo);
+
+        SleepInfo actualEntry = sleepInfoService.createEntry(sleepInfo);
 
         assertEquals(saveSleepInfo, actualEntry);
 
@@ -44,23 +53,30 @@ public class TestSleepInfoService {
     @Test
     void givenNewRecordWithBothSleepAndGetupTime_whenSaveRecord_thenReturnSavedRecordWithHours() {
         SleepInfo sleepInfo = SleepInfo.builder()
-                .id(1L)
-                .sleepDateTime(Timestamp.valueOf("2022-01-01 21:20:00"))
-                .getUpDateTime(Timestamp.valueOf("2022-01-02 05:20:00"))
+                .id(null)
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-02 05:20", dateFormatter))
                 .build();
 
         SleepInfo saveSleepInfo = SleepInfo.builder()
-                .id(1L)
-                .sleepDateTime(Timestamp.valueOf("2022-01-01 21:20:00"))
-                .getUpDateTime(Timestamp.valueOf("2022-01-02 05:20:00"))
+                .id(null)
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-02 05:20", dateFormatter))
                 .hours(8L)
                 .build();
 
-        when(sleepInfoRepository.save(saveSleepInfo)).thenReturn(saveSleepInfo);
+        SleepInfo repositoryReturnSleepInfo = SleepInfo.builder()
+                .id(1L)
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-02 05:20", dateFormatter))
+                .hours(8L)
+                .build();
+
+        when(sleepInfoRepository.save(saveSleepInfo)).thenReturn(repositoryReturnSleepInfo);
 
         SleepInfo actualEntry = sleepInfoService.createEntry(sleepInfo);
 
-        assertEquals(saveSleepInfo, actualEntry);
+        assertEquals(repositoryReturnSleepInfo, actualEntry);
 
     }
 
@@ -69,7 +85,7 @@ public class TestSleepInfoService {
     void givenId_whenFindById_thenReturnRecordById() {
         SleepInfo sleepInfo = SleepInfo.builder()
                 .id(1L)
-                .sleepDateTime(Timestamp.valueOf("2022-01-01 21:20:00"))
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
                 .build();
 
 
@@ -85,18 +101,18 @@ public class TestSleepInfoService {
     void givenNewRecord_whenSaveRecord_thenReturnUpdatedRecordWithHoursCalculated() {
         SleepInfo dbsleepInfo = SleepInfo.builder()
                 .id(1L)
-                .sleepDateTime(Timestamp.valueOf("2022-01-01 21:20:00"))
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
                 .build();
         SleepInfo sleepInfo = SleepInfo.builder()
                 .id(1L)
-                .sleepDateTime(Timestamp.valueOf("2022-01-01 21:20:00"))
-                .getUpDateTime(Timestamp.valueOf("2022-01-02 05:20:00"))
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-02 05:20", dateFormatter))
                 .build();
 
         SleepInfo saveSleepInfo = SleepInfo.builder()
                 .id(1L)
-                .sleepDateTime(Timestamp.valueOf("2022-01-01 21:20:00"))
-                .getUpDateTime(Timestamp.valueOf("2022-01-02 05:20:00"))
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-02 05:20", dateFormatter))
                 .hours(8L)
                 .build();
 
@@ -113,14 +129,14 @@ public class TestSleepInfoService {
     void whenFindAllRecords_thenReturnAllRecords() {
         SleepInfo dbsleepInfoFirstRecord = SleepInfo.builder()
                 .id(1L)
-                .sleepDateTime(Timestamp.valueOf("2022-01-01 21:20:00"))
-                .getUpDateTime(Timestamp.valueOf("2022-01-02 05:20:00"))
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-02 05:20", dateFormatter))
                 .hours(8L)
                 .build();
 
         SleepInfo dbsleepInfoSecondRecord = SleepInfo.builder()
                 .id(2L)
-                .sleepDateTime(Timestamp.valueOf("2022-01-02 21:20:00"))
+                .sleepDateTime(LocalDateTime.parse("2022-01-02 21:20", dateFormatter))
                 .build();
 
         List<SleepInfo> sleepInfoList = new ArrayList<>();
@@ -139,7 +155,7 @@ public class TestSleepInfoService {
     void givenId_whenDeleteRecord_thenDeleteRecord() {
         SleepInfo dbsleepInfo = SleepInfo.builder()
                 .id(1L)
-                .sleepDateTime(Timestamp.valueOf("2022-01-01 21:20:00"))
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
                 .build();
 
         when(sleepInfoRepository.findById(1L)).thenReturn(Optional.ofNullable(dbsleepInfo));

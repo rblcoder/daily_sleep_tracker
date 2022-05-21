@@ -21,15 +21,21 @@ public class SleepInfoServiceImpl implements SleepInfoService {
     @Override
     public SleepInfo createEntry(SleepInfo sleepInfo) {
 
+        if (sleepInfo.getId() != null) {
+            return updateEntry(sleepInfo, sleepInfo.getId());
+
+        }
+
 
         if (sleepInfo.getGetUpDateTime() != null) {
 
             long hours = Duration.between(sleepInfo
-                    .getSleepDateTime().toLocalDateTime(), sleepInfo
-                    .getGetUpDateTime().toLocalDateTime()).getSeconds() / 3600;
+                    .getSleepDateTime(), sleepInfo
+                    .getGetUpDateTime()).getSeconds() / 3600;
 
             sleepInfo.setHours(hours);
         }
+
 
         return sleepInfoRepository.save(sleepInfo);
     }
@@ -49,8 +55,8 @@ public class SleepInfoServiceImpl implements SleepInfoService {
         if (sleepInfo.getGetUpDateTime() != null) {
 
             long hours = Duration.between(sleepInfo
-                    .getSleepDateTime().toLocalDateTime(), sleepInfo
-                    .getGetUpDateTime().toLocalDateTime()).getSeconds() / 3600;
+                    .getSleepDateTime(), sleepInfo
+                    .getGetUpDateTime()).getSeconds() / 3600;
 
             dbSleepInfo.setHours(hours);
         }

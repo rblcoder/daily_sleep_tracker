@@ -3,33 +3,29 @@
       xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" th:href="@{/styles/style.css}"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+          crossorigin="anonymous">
+
     <title>Sleep Tracker</title>
-
-    <style>
-        body {
-          text-align: center;
-        }
-
-    </style>
 
 </head>
 <body>
-<h1>Sleep Tracker</h1>
-<div>
+<h1 class="text-center">Sleep Tracker</h1>
+<h2 class="text-center">
     <a th:href="@{/create}">
         Create Entry
     </a>
-</div>
+</h2>
 
 <div th:if="${!entries.isEmpty()}">
-    <table>
+    <table class="table table-bordered">
         <tr>
-            <th>Sleep</th>
-            <th>Wake Up</th>
-            <th>Hours</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            <th scope="col">Sleep</th>
+            <th scope="col">Wake Up</th>
+            <th scope="col">Hours</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
         </tr>
         <tr th:each="entry:${entries}">
             <td th:text="${entry.getSleepDateTime()}"></td>
@@ -37,14 +33,14 @@
             <td th:text="${entry.getHours()}"></td>
 
             <td>
-                <a th:href="@{/update/{Id}(id=${entry.getId()})}">
+                <a th:href="@{/update/{Id}(Id=${entry.getId()})}">
                     Edit Entry
                 </a>
 
             </td>
 
             <td>
-                <a th:href="@{/delete/{Id}(id=${entry.getId()})}">
+                <a th:href="@{/delete/{Id}(Id=${entry.getId()})}">
                     Delete Entry
                 </a>
 

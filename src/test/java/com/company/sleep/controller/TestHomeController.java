@@ -1,5 +1,6 @@
 package com.company.sleep.controller;
 
+import com.company.sleep.model.SleepInfo;
 import com.company.sleep.service.impl.SleepInfoServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import static org.hamcrest.Matchers.containsString;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,6 +27,8 @@ public class TestHomeController {
 
     @MockBean
     private SleepInfoServiceImpl sleepInfoService;
+
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Test
     @WithMockUser
@@ -44,6 +51,12 @@ public class TestHomeController {
     @Test
     @WithMockUser
     void shouldLoadUpdateEntryPage() throws Exception {
+        SleepInfo sleepInfo = SleepInfo.builder()
+                .id(1L)
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .build();
+
+        when(sleepInfoService.getEntryById(1L)).thenReturn(sleepInfo);
 
         mockMvc.perform(get("/update/1"))
                 .andExpect(status().isOk())
