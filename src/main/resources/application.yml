@@ -2,7 +2,7 @@ spring:
   security:
     user:
       name: ${SPRING_USERNAME}
-      password: ${SPRING_USERNAME}
+      password: ${SPRING_PASSWORD}
   datasource:
     url: jdbc:postgresql://localhost:5432/sleep
     username: ${DB_USERNAME}

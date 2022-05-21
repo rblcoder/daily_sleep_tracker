@@ -28,24 +28,30 @@ public class HomeController {
     }
 
     @PostMapping("/")
-    public String saveEntry(@ModelAttribute("sleepInfo") SleepInfo sleepInfo){
+    public String saveEntry(@ModelAttribute("sleepInfo") SleepInfo sleepInfo) {
         sleepInfoService.createEntry(sleepInfo);
         return "redirect:/";
     }
 
     @GetMapping("/create")
-    public String showCreateEntryForm(Model model){
+    public String showCreateEntryForm(Model model) {
         SleepInfo sleepInfo = new SleepInfo();
         model.addAttribute("sleepInfo", sleepInfo);
         return "create_entry";
     }
 
     @GetMapping("/update/{Id}")
-    public String showUpdateEntryForm(@PathVariable(value = "Id") Long Id, Model model){
+    public String showUpdateEntryForm(@PathVariable(value = "Id") Long Id, Model model) {
         SleepInfo sleepInfo = sleepInfoService.getEntryById(Id);
         model.addAttribute("sleepInfo", sleepInfo);
         return "update_entry";
     }
 
+    @GetMapping("/delete/{Id}")
+    public String deleteEntry(@PathVariable(value = "Id") Long Id) {
+        sleepInfoService.deleteEntryById(Id);
+
+        return "redirect:/";
+    }
 
 }

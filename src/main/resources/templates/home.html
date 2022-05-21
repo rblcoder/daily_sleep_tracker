@@ -5,9 +5,23 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/styles/style.css}"/>
     <title>Sleep Tracker</title>
+
+    <style>
+        body {
+          text-align: center;
+        }
+
+    </style>
+
 </head>
 <body>
 <h1>Sleep Tracker</h1>
+<div>
+    <a th:href="@{/create}">
+        Create Entry
+    </a>
+</div>
+
 <div th:if="${!entries.isEmpty()}">
     <table>
         <tr>
@@ -23,23 +37,19 @@
             <td th:text="${entry.getHours()}"></td>
 
             <td>
+                <a th:href="@{/update/{Id}(id=${entry.getId()})}">
+                    Edit Entry
+                </a>
 
-                <span th:fragment>
-                <span th:if="${entry.getStatus()==T(com.tw.vapsi.biblioteca.model.entryStatus).BORROWED}">
-                    Borrowed
-                </span>
-
-                <span th:if="${entry.getStatus()==T(com.tw.vapsi.biblioteca.model.entryStatus).AVAILABLE}">
-
-
-                <form th:action="@{/entrys/{entryId}/checkout(entryId=${entry.getId()})}"
-                      th:method="put">
-                    <input onclick="this.form.submit()"
-                           type="button" value="Check Out">
-                </form>
-                </span>
-                </span>
             </td>
+
+            <td>
+                <a th:href="@{/delete/{Id}(id=${entry.getId()})}">
+                    Delete Entry
+                </a>
+
+            </td>
+
         </tr>
     </table>
 </div>

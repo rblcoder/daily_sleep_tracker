@@ -42,11 +42,36 @@ public class TestSleepInfoService {
     }
 
     @Test
+    void givenNewRecordWithBothSleepAndGetupTime_whenSaveRecord_thenReturnSavedRecordWithHours() {
+        SleepInfo sleepInfo = SleepInfo.builder()
+                .id(1L)
+                .sleepDateTime(Timestamp.valueOf("2022-01-01 21:20:00"))
+                .getUpDateTime(Timestamp.valueOf("2022-01-02 05:20:00"))
+                .build();
+
+        SleepInfo saveSleepInfo = SleepInfo.builder()
+                .id(1L)
+                .sleepDateTime(Timestamp.valueOf("2022-01-01 21:20:00"))
+                .getUpDateTime(Timestamp.valueOf("2022-01-02 05:20:00"))
+                .hours(8L)
+                .build();
+
+        when(sleepInfoRepository.save(saveSleepInfo)).thenReturn(saveSleepInfo);
+
+        SleepInfo actualEntry = sleepInfoService.createEntry(sleepInfo);
+
+        assertEquals(saveSleepInfo, actualEntry);
+
+    }
+
+
+    @Test
     void givenId_whenFindById_thenReturnRecordById() {
         SleepInfo sleepInfo = SleepInfo.builder()
                 .id(1L)
                 .sleepDateTime(Timestamp.valueOf("2022-01-01 21:20:00"))
                 .build();
+
 
         when(sleepInfoRepository.findById(1L)).thenReturn(Optional.ofNullable(sleepInfo));
 
@@ -102,7 +127,7 @@ public class TestSleepInfoService {
         sleepInfoList.add(dbsleepInfoFirstRecord);
         sleepInfoList.add(dbsleepInfoSecondRecord);
 
-        when(sleepInfoRepository.findAll()).thenReturn(sleepInfoList);
+        when(sleepInfoRepository.findAllByOrderBySleepDateTimeDesc()).thenReturn(sleepInfoList);
 
         List<SleepInfo> actualSleepInfoList = sleepInfoService.getAllEntries();
 
