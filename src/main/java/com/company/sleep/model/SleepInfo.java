@@ -29,11 +29,6 @@ public class SleepInfo {
     private LocalDateTime getUpDateTime;
     private Long hours;
 
-    public SleepInfo(LocalDateTime sleepDateTime) {
-        this.sleepDateTime = sleepDateTime;
-
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

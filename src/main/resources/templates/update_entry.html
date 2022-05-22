@@ -3,29 +3,32 @@
       xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
           integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
-          crossorigin="anonymous">
+          rel="stylesheet">
     <title>Update Entry for Sleep Tracker</title>
 
 </head>
 <body>
 <h1 class="text-center">Update Entry for Sleep Tracker</h1>
+<h1 class="text-center" id="spanmessage" th:if="${message}" th:text="${message}"></h1>
 <form action="#" method="POST" th:action="@{/}" th:object="${sleepInfo}">
     <div class="container">
 
-    <input th:field="*{id}" type="hidden"/>
-    <div class="form-group row">
-    <label for="sleep">Sleep Date Time</label>
-    <input class="form-control" id="sleep" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}" placeholder="2022-01-01 21:00" th:field="*{sleepDateTime}"
-           type="text">
-    </div>
-    <div class="form-group row">
-    <label for="getup">Get up Date Time</label>
-    <input class="form-control" id="getup" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}" placeholder="2022-01-02 05:00" th:field="*{getUpDateTime}"
-           type="text">
-    </div>
-    <button type="submit" class="btn btn-primary"> Save Entry</button>
+        <input th:field="*{id}" type="hidden"/>
+        <div class="form-group row">
+            <label for="sleep">Sleep Date Time</label>
+            <input class="form-control" id="sleep" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}"
+                   placeholder="2022-01-01 21:00" th:field="*{sleepDateTime}"
+                   type="text">
+        </div>
+        <div class="form-group row">
+            <label for="getup">Get up Date Time</label>
+            <input class="form-control" id="getup" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}"
+                   placeholder="2022-01-02 05:00" th:field="*{getUpDateTime}"
+                   type="text">
+        </div>
+        <button class="btn btn-primary" type="submit"> Save Entry</button>
     </div>
 </form>
 </body>

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,13 +22,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = HomeController.class)
 public class TestHomeController {
 
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private SleepInfoServiceImpl sleepInfoService;
-
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Test
     @WithMockUser
@@ -61,5 +59,16 @@ public class TestHomeController {
         mockMvc.perform(get("/update/1"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Update Entry for Sleep Tracker")));
+    }
+
+    @Test
+    @WithMockUser
+    void shouldDeleteEntryById() throws Exception {
+        mockMvc.perform(get("/delete/1"));
+
+
+        verify(sleepInfoService,
+                times(1)).deleteEntryById(1L);
+
     }
 }

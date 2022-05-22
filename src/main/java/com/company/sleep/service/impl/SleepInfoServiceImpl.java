@@ -35,7 +35,7 @@ public class SleepInfoServiceImpl implements SleepInfoService {
                     .getSleepDateTime(), sleepInfo
                     .getGetUpDateTime()).getSeconds() / 3600;
 
-            if (hours < 0){
+            if (hours < 0) {
                 throw new GetUpTimeLessThanSleepTime();
             }
 
@@ -63,7 +63,7 @@ public class SleepInfoServiceImpl implements SleepInfoService {
             long hours = Duration.between(sleepInfo
                     .getSleepDateTime(), sleepInfo
                     .getGetUpDateTime()).getSeconds() / 3600;
-            if (hours < 0){
+            if (hours < 0) {
                 throw new GetUpTimeLessThanSleepTime();
             }
             dbSleepInfo.setHours(hours);
@@ -86,7 +86,7 @@ public class SleepInfoServiceImpl implements SleepInfoService {
     @Override
     public String dateValidation(LocalDateTime sleepDateTime, LocalDateTime getUpDateTime) {
         String message = "";
-        if (sleepDateTime.isAfter(getUpDateTime)){
+        if (sleepDateTime.isAfter(getUpDateTime)) {
             message = "Sleep time cannot be after Get up time";
         }
         return message;

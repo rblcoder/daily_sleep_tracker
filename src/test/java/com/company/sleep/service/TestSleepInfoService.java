@@ -1,8 +1,11 @@
 package com.company.sleep.service;
 
+import com.company.sleep.exception.GetUpTimeLessThanSleepTime;
+import com.company.sleep.exception.RecordNotFoundException;
 import com.company.sleep.model.SleepInfo;
 import com.company.sleep.repository.SleepInfoRepository;
 import com.company.sleep.service.impl.SleepInfoServiceImpl;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,13 +24,36 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class TestSleepInfoService {
 
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     @Mock
     private SleepInfoRepository sleepInfoRepository;
-
     @InjectMocks
     private SleepInfoServiceImpl sleepInfoService;
 
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    @Test
+    void givenEntryWithGivenIdDoesNotExistInDatabase_whenFindEntryByTheGivenId_thenThrowException() {
+        when(sleepInfoRepository.findById(1L)).thenThrow(new RecordNotFoundException());
+
+
+        Assertions.assertThrows(
+                RecordNotFoundException.class,
+                () -> sleepInfoService.getEntryById(1L));
+
+
+    }
+
+    @Test
+    void givenRecordWithGetUoTimeLessThanSleepTime_whenSaveRecord_thenThrowException() {
+        SleepInfo sleepInfo = SleepInfo.builder()
+                .id(null)
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-01 05:20", dateFormatter))
+                .build();
+
+        Assertions.assertThrows(
+                GetUpTimeLessThanSleepTime.class,
+                () -> sleepInfoService.createEntry(sleepInfo));
+    }
 
     @Test
     void givenNewRecord_whenSaveRecord_thenReturnSavedRecord() {

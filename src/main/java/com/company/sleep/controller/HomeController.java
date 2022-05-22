@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 
 @Controller
@@ -28,12 +32,24 @@ public class HomeController {
     }
 
     @PostMapping("/")
-    public String saveEntry(@ModelAttribute("sleepInfo") SleepInfo sleepInfo, Model model) {
+    public String saveEntry(@ModelAttribute("sleepInfo") SleepInfo sleepInfo, Model model,
+                            RedirectAttributes redirectAttributes, HttpSession session) {
         String message = sleepInfoService
                 .dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime());
-        if (message != ""){
-            model.addAttribute("message", message);
-            return "errors";
+        if (message != "") {
+
+            if (sleepInfo.getId() == null) {
+                session.setAttribute("sleepInfo", sleepInfo);
+                redirectAttributes.addFlashAttribute("message", message);
+                return "redirect:/create";
+            } else {
+
+                session.setAttribute("sleepInfo", sleepInfo);
+                redirectAttributes.addFlashAttribute("message", message);
+                return "redirect:/update/" + sleepInfo.getId();
+            }
+
+
         }
         sleepInfoService.createEntry(sleepInfo);
 
@@ -41,16 +57,30 @@ public class HomeController {
     }
 
     @GetMapping("/create")
-    public String showCreateEntryForm(Model model) {
-        SleepInfo sleepInfo = new SleepInfo();
-        model.addAttribute("sleepInfo", sleepInfo);
+    public String showCreateEntryForm(Model model, HttpServletRequest request) {
+
+        if (request.getSession().getAttribute("sleepInfo") == null) {
+            SleepInfo sleepInfo = new SleepInfo();
+            model.addAttribute("sleepInfo", sleepInfo);
+        } else {
+            model.addAttribute("sleepInfo", request.getSession().getAttribute("sleepInfo"));
+            request.getSession().removeAttribute("sleepInfo");
+
+        }
+
         return "create_entry";
     }
 
     @GetMapping("/update/{Id}")
-    public String showUpdateEntryForm(@PathVariable(value = "Id") Long Id, Model model) {
-        SleepInfo sleepInfo = sleepInfoService.getEntryById(Id);
-        model.addAttribute("sleepInfo", sleepInfo);
+    public String showUpdateEntryForm(@PathVariable(value = "Id") Long Id, Model model,
+                                      HttpServletRequest request) {
+        if (request.getSession().getAttribute("sleepInfo") == null) {
+            SleepInfo sleepInfo = sleepInfoService.getEntryById(Id);
+            model.addAttribute("sleepInfo", sleepInfo);
+        } else {
+            model.addAttribute("sleepInfo", request.getSession().getAttribute("sleepInfo"));
+            request.getSession().removeAttribute("sleepInfo");
+        }
         return "update_entry";
     }
 

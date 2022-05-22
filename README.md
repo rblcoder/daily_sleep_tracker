@@ -18,7 +18,7 @@ The user can login, create, view, update and delete entries.
 from terminal:
 
 psql postgres
-CREATE ROLE sleep WITH LOGIN PASSWORD ‘sleep’;
+CREATE ROLE sleep WITH LOGIN PASSWORD ‘somepassword’;
 
 \q	
 psql postgres -U sleep
