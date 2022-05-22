@@ -1,10 +1,13 @@
 package com.company.sleep.service.impl;
 
+import com.company.sleep.config.Constants;
+import com.company.sleep.exception.DateAndTimeNeedsToBeUnique;
 import com.company.sleep.exception.GetUpTimeLessThanSleepTime;
 import com.company.sleep.exception.RecordNotFoundException;
 import com.company.sleep.model.SleepInfo;
 import com.company.sleep.repository.SleepInfoRepository;
 import com.company.sleep.service.SleepInfoService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -21,29 +24,27 @@ public class SleepInfoServiceImpl implements SleepInfoService {
     }
 
     @Override
-    public SleepInfo createEntry(SleepInfo sleepInfo) {
-
-        if (sleepInfo.getId() != null) {
-            return updateEntry(sleepInfo, sleepInfo.getId());
-
-        }
-
-
-        if (sleepInfo.getGetUpDateTime() != null) {
-
-            long hours = Duration.between(sleepInfo
-                    .getSleepDateTime(), sleepInfo
-                    .getGetUpDateTime()).getSeconds() / 3600;
-
-            if (hours < 0) {
-                throw new GetUpTimeLessThanSleepTime();
+    public SleepInfo createEntry(SleepInfo sleepInfo) throws DateAndTimeNeedsToBeUnique {
+        try {
+            if (sleepInfo.getId() != null) {
+                return updateEntry(sleepInfo, sleepInfo.getId());
             }
 
-            sleepInfo.setHours(hours);
+            if (sleepInfo.getGetUpDateTime() != null) {
+
+                long hours = Duration.between(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()).getSeconds()
+                        / 3600;
+                if (hours < 0) {
+                    throw new GetUpTimeLessThanSleepTime();
+                }
+                sleepInfo.setHours(hours);
+            }
+
+            return sleepInfoRepository.save(sleepInfo);
+        } catch (DataIntegrityViolationException exception) {
+            throw new DateAndTimeNeedsToBeUnique();
         }
 
-
-        return sleepInfoRepository.save(sleepInfo);
     }
 
     @Override
@@ -60,9 +61,8 @@ public class SleepInfoServiceImpl implements SleepInfoService {
         dbSleepInfo.setGetUpDateTime(sleepInfo.getGetUpDateTime());
         if (sleepInfo.getGetUpDateTime() != null) {
 
-            long hours = Duration.between(sleepInfo
-                    .getSleepDateTime(), sleepInfo
-                    .getGetUpDateTime()).getSeconds() / 3600;
+            long hours = Duration.between(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()).getSeconds()
+                    / 3600;
             if (hours < 0) {
                 throw new GetUpTimeLessThanSleepTime();
             }
@@ -86,8 +86,10 @@ public class SleepInfoServiceImpl implements SleepInfoService {
     @Override
     public String dateValidation(LocalDateTime sleepDateTime, LocalDateTime getUpDateTime) {
         String message = "";
-        if (sleepDateTime.isAfter(getUpDateTime)) {
-            message = "Sleep time cannot be after Get up time";
+        if (sleepDateTime == null) {
+            message = Constants.SLEEP_TIME_CANNOT_BE_EMPTY.toString();
+        } else if (getUpDateTime != null && sleepDateTime.isAfter(getUpDateTime)) {
+            message = Constants.GET_UP_TIME_CANNOT_BE_LESS_THAN_SLEEP_TIME.toString();
         }
         return message;
     }

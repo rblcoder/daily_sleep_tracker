@@ -1,12 +1,13 @@
 package com.company.sleep.service;
 
+import com.company.sleep.exception.DateAndTimeNeedsToBeUnique;
 import com.company.sleep.model.SleepInfo;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SleepInfoService {
-    SleepInfo createEntry(SleepInfo sleepInfo);
+    SleepInfo createEntry(SleepInfo sleepInfo) throws DateAndTimeNeedsToBeUnique;
 
     SleepInfo getEntryById(Long id);
 

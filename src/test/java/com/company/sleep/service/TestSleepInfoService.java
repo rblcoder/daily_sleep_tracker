@@ -1,5 +1,6 @@
 package com.company.sleep.service;
 
+import com.company.sleep.exception.DateAndTimeNeedsToBeUnique;
 import com.company.sleep.exception.GetUpTimeLessThanSleepTime;
 import com.company.sleep.exception.RecordNotFoundException;
 import com.company.sleep.model.SleepInfo;
@@ -56,7 +57,7 @@ public class TestSleepInfoService {
     }
 
     @Test
-    void givenNewRecord_whenSaveRecord_thenReturnSavedRecord() {
+    void givenNewRecord_whenSaveRecord_thenReturnSavedRecord() throws DateAndTimeNeedsToBeUnique {
 
         SleepInfo sleepInfo = SleepInfo.builder()
                 .id(null)
@@ -77,7 +78,8 @@ public class TestSleepInfoService {
     }
 
     @Test
-    void givenNewRecordWithBothSleepAndGetupTime_whenSaveRecord_thenReturnSavedRecordWithHours() {
+    void givenNewRecordWithBothSleepAndGetupTime_whenSaveRecord_thenReturnSavedRecordWithHours()
+            throws DateAndTimeNeedsToBeUnique {
         SleepInfo sleepInfo = SleepInfo.builder()
                 .id(null)
                 .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))

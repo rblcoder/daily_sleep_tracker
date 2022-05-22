@@ -21,10 +21,11 @@ public class SleepInfo {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime sleepDateTime;
 
+    @Column(unique = true)
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime getUpDateTime;
     private Long hours;

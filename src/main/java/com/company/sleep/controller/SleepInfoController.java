@@ -1,5 +1,6 @@
 package com.company.sleep.controller;
 
+import com.company.sleep.exception.DateAndTimeNeedsToBeUnique;
 import com.company.sleep.model.SleepInfo;
 import com.company.sleep.service.SleepInfoService;
 import org.springframework.stereotype.Controller;
@@ -15,12 +16,12 @@ import javax.servlet.http.HttpSession;
 
 
 @Controller
-public class HomeController {
+public class SleepInfoController {
 
 
     private final SleepInfoService sleepInfoService;
 
-    public HomeController(SleepInfoService sleepInfoService) {
+    public SleepInfoController(SleepInfoService sleepInfoService) {
         this.sleepInfoService = sleepInfoService;
     }
 
@@ -33,7 +34,8 @@ public class HomeController {
 
     @PostMapping("/")
     public String saveEntry(@ModelAttribute("sleepInfo") SleepInfo sleepInfo, Model model,
-                            RedirectAttributes redirectAttributes, HttpSession session) {
+                            RedirectAttributes redirectAttributes, HttpSession session)
+            throws DateAndTimeNeedsToBeUnique {
         String message = sleepInfoService
                 .dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime());
         if (message != "") {
