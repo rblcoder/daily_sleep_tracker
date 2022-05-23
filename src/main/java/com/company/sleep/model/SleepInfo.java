@@ -46,4 +46,14 @@ public class SleepInfo {
         return Objects
                 .hash(id, sleepDateTime, getUpDateTime, hours);
     }
+
+    @Override
+    public String toString() {
+        return "SleepInfo{" +
+                "id=" + id +
+                ", sleepDateTime=" + sleepDateTime +
+                ", getUpDateTime=" + getUpDateTime +
+                ", hours=" + hours +
+                '}';
+    }
 }

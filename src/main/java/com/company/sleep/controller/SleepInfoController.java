@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 
 @Controller
@@ -33,12 +34,12 @@ public class SleepInfoController {
     }
 
     @PostMapping("/")
-    public String saveEntry(@ModelAttribute("sleepInfo") SleepInfo sleepInfo, Model model,
+    public String saveEntry(@ModelAttribute("sleepInfo") SleepInfo sleepInfo,
                             RedirectAttributes redirectAttributes, HttpSession session)
             throws DateAndTimeNeedsToBeUnique {
         String message = sleepInfoService
                 .dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime());
-        if (message != "") {
+        if (!Objects.equals(message, "")) {
 
             if (sleepInfo.getId() == null) {
                 session.setAttribute("sleepInfo", sleepInfo);

@@ -1,5 +1,6 @@
 package com.company.sleep.service;
 
+import com.company.sleep.config.Constants;
 import com.company.sleep.exception.DateAndTimeNeedsToBeUnique;
 import com.company.sleep.exception.GetUpTimeLessThanSleepTime;
 import com.company.sleep.exception.RecordNotFoundException;
@@ -44,7 +45,7 @@ public class TestSleepInfoService {
     }
 
     @Test
-    void givenRecordWithGetUoTimeLessThanSleepTime_whenSaveRecord_thenThrowException() {
+    void givenNewRecord_whenSaveRecordWithGetUpTimeLessThanSleepTime_thenThrowException() {
         SleepInfo sleepInfo = SleepInfo.builder()
                 .id(null)
                 .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
@@ -54,6 +55,35 @@ public class TestSleepInfoService {
         Assertions.assertThrows(
                 GetUpTimeLessThanSleepTime.class,
                 () -> sleepInfoService.createEntry(sleepInfo));
+    }
+
+    @Test
+    void givenExistingRecord_whenModifyingRecordWithGetUpTimeLessThanSleepTime_thenThrowException() {
+        SleepInfo sleepInfo = SleepInfo.builder()
+                .id(1L)
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .build();
+
+        SleepInfo toBeModifiedSleepInfo = SleepInfo.builder()
+                .id(1L)
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-01 05:20", dateFormatter))
+                .build();
+
+
+        when(sleepInfoRepository.findById(1L)).thenReturn(Optional.ofNullable(sleepInfo));
+
+        Assertions.assertThrows(
+                GetUpTimeLessThanSleepTime.class,
+                () -> sleepInfoService.updateEntry(toBeModifiedSleepInfo, 1L));
+
+    }
+
+    @Test
+    void givenSleepTimeNullAndGetUpTime_whenValidateSleepTimeAndGetUpTime_ThenReturnSleepTimeShouldNotBeEmpty(){
+        String result = sleepInfoService.dateValidation(null,
+                LocalDateTime.parse("2022-01-01 05:20", dateFormatter));
+        assertEquals(Constants.SLEEP_TIME_CANNOT_BE_EMPTY.toString(), result);
     }
 
     @Test
@@ -74,6 +104,24 @@ public class TestSleepInfoService {
         SleepInfo actualEntry = sleepInfoService.createEntry(sleepInfo);
 
         assertEquals(saveSleepInfo, actualEntry);
+
+    }
+
+    @Test
+    void givenExistingRecord_whenSaveRecord_thenReturnSavedRecord() throws DateAndTimeNeedsToBeUnique {
+
+        SleepInfo sleepInfo = SleepInfo.builder()
+                .id(1L)
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .build();
+
+        when(sleepInfoRepository.findById(1L)).thenReturn(Optional.ofNullable(sleepInfo));
+
+        when(sleepInfoRepository.save(sleepInfo)).thenReturn(sleepInfo);
+
+        SleepInfo actualEntry = sleepInfoService.createEntry(sleepInfo);
+
+        assertEquals(sleepInfo, actualEntry);
 
     }
 
