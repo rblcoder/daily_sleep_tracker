@@ -30,20 +30,24 @@ public class SleepInfoServiceImpl implements SleepInfoService {
                 return updateEntry(sleepInfo, sleepInfo.getId());
             }
 
-            if (sleepInfo.getGetUpDateTime() != null) {
-
-                long hours = Duration.between(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()).getSeconds()
-                        / 3600;
-                if (hours < 0) {
-                    throw new GetUpTimeLessThanSleepTime();
-                }
-                sleepInfo.setHours(hours);
+            if ("" != dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime())){
+                throw new GetUpTimeLessThanSleepTime();
             }
 
-            return sleepInfoRepository.save(sleepInfo);
+            if (sleepInfo.getGetUpDateTime() != null) {
+
+                calculateHours(sleepInfo);
+            }
+           return sleepInfoRepository.save(sleepInfo);
         } catch (DataIntegrityViolationException exception) {
             throw new DateAndTimeNeedsToBeUnique();
         }
+
+    }
+
+    public void calculateHours(SleepInfo sleepInfo) {
+        sleepInfo.setHours(Duration.between(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()).getSeconds()
+                / 3600);
 
     }
 
@@ -55,18 +59,20 @@ public class SleepInfoServiceImpl implements SleepInfoService {
 
     @Override
     public SleepInfo updateEntry(SleepInfo sleepInfo, Long id) {
+
+        if ("" != dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime())){
+            throw new GetUpTimeLessThanSleepTime();
+        }
+
         SleepInfo dbSleepInfo = sleepInfoRepository.findById(id).orElseThrow(RecordNotFoundException::new);
         dbSleepInfo.setSleepDateTime(sleepInfo.getSleepDateTime());
 
         dbSleepInfo.setGetUpDateTime(sleepInfo.getGetUpDateTime());
-        if (sleepInfo.getGetUpDateTime() != null) {
 
-            long hours = Duration.between(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()).getSeconds()
-                    / 3600;
-            if (hours < 0) {
-                throw new GetUpTimeLessThanSleepTime();
-            }
-            dbSleepInfo.setHours(hours);
+        if (dbSleepInfo.getGetUpDateTime() != null) {
+
+            calculateHours(dbSleepInfo);
+
         }
         return sleepInfoRepository.save(dbSleepInfo);
     }

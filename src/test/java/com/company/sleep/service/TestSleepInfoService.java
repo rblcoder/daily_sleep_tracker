@@ -71,8 +71,6 @@ public class TestSleepInfoService {
                 .build();
 
 
-        when(sleepInfoRepository.findById(1L)).thenReturn(Optional.ofNullable(sleepInfo));
-
         Assertions.assertThrows(
                 GetUpTimeLessThanSleepTime.class,
                 () -> sleepInfoService.updateEntry(toBeModifiedSleepInfo, 1L));
@@ -241,6 +239,20 @@ public class TestSleepInfoService {
         sleepInfoService.deleteEntryById(1L);
 
         verify(sleepInfoRepository, times(1)).delete(dbsleepInfo);
+
+    }
+
+    @Test
+    void givenSleepInfoObjectWithBothSleepAndGetupTime_whenCalculateHours_ReturnHours(){
+        SleepInfo sleepInfo = SleepInfo.builder()
+                .id(1L)
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-02 05:20", dateFormatter))
+                .build();
+
+        sleepInfoService.calculateHours(sleepInfo);
+
+        assertEquals(8, sleepInfo.getHours());
 
     }
 }
