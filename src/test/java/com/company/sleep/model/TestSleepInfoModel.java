@@ -11,7 +11,7 @@ public class TestSleepInfoModel {
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @Test
-    void testEquals(){
+    void testEquals() {
         SleepInfo sleepInfo = SleepInfo.builder()
                 .id(1L)
                 .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
@@ -30,7 +30,7 @@ public class TestSleepInfoModel {
     }
 
     @Test
-    void testHashCode(){
+    void testHashCode() {
         SleepInfo sleepInfo = SleepInfo.builder()
                 .id(1L)
                 .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
@@ -50,7 +50,7 @@ public class TestSleepInfoModel {
     }
 
     @Test
-    void testEqualsObjectVsNull(){
+    void testEqualsObjectVsNull() {
         SleepInfo sleepInfo = SleepInfo.builder()
                 .id(1L)
                 .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))

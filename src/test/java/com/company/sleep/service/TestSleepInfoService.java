@@ -78,7 +78,7 @@ public class TestSleepInfoService {
     }
 
     @Test
-    void givenSleepTimeNullAndGetUpTime_whenValidateSleepTimeAndGetUpTime_ThenReturnSleepTimeShouldNotBeEmpty(){
+    void givenSleepTimeNullAndGetUpTime_whenValidateSleepTimeAndGetUpTime_ThenReturnSleepTimeShouldNotBeEmpty() {
         String result = sleepInfoService.dateValidation(null,
                 LocalDateTime.parse("2022-01-01 05:20", dateFormatter));
         assertEquals(Constants.SLEEP_TIME_CANNOT_BE_EMPTY.toString(), result);
@@ -243,7 +243,7 @@ public class TestSleepInfoService {
     }
 
     @Test
-    void givenSleepInfoObjectWithBothSleepAndGetupTime_whenCalculateHours_ReturnHours(){
+    void givenSleepInfoObjectWithBothSleepAndGetupTime_whenCalculateHours_ReturnHours() {
         SleepInfo sleepInfo = SleepInfo.builder()
                 .id(1L)
                 .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))

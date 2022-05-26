@@ -1,11 +1,9 @@
 package com.company.sleep.controller;
 
+import com.company.sleep.config.Constants;
 import com.company.sleep.exception.DateAndTimeNeedsToBeUnique;
 import com.company.sleep.model.SleepInfo;
 import com.company.sleep.service.impl.SleepInfoServiceImpl;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -14,7 +12,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
@@ -24,10 +23,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = SleepInfoController.class)
 @AutoConfigureMockMvc(addFilters = false)
@@ -88,22 +84,76 @@ public class TestSleepInfoController {
 
     @Test
     @WithMockUser
-    @Disabled
-    void shouldSaveEntry() throws Exception, DateAndTimeNeedsToBeUnique {
+    void whenUpdatedEntryIncorrect_shouldRedirectToUpdate() throws Exception {
         SleepInfo sleepInfo = SleepInfo.builder()
-                .id(null)
+                .id(1L)
                 .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-01 05:20", dateFormatter))
                 .build();
-        when(sleepInfoService.dateValidation(sleepInfo.getSleepDateTime(), null))
-                .thenReturn("");
+        when(sleepInfoService.dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()))
+                .thenReturn(Constants.GET_UP_TIME_CANNOT_BE_LESS_THAN_SLEEP_TIME.toString());
+
+
+        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+        multiValueMap.add("id", "1");
+        multiValueMap.add("sleepDateTime", "2022-01-01 21:20");
+        multiValueMap.add("getUpDateTime", "2022-01-01 05:20");
 
         mockMvc.perform(post("/")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-//                        .sessionAttr("sleepInfo", sleepInfo)
-                        .param("sleepDateTime", sleepInfo.getSleepDateTime().toString())
-                        ).andDo(print());
-//                .andExpect(status().isOk());
-//        verify(sleepInfoService, times(1)).createEntry(sleepInfo);
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .params(multiValueMap)).andExpect(redirectedUrl("/update/1"));
 
+
+    }
+
+    @Test
+    @WithMockUser
+    void whenCreateEntryIncorrect_shouldRedirectToCreate() throws Exception {
+        SleepInfo sleepInfo = SleepInfo.builder()
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-01 05:20", dateFormatter))
+                .build();
+        when(sleepInfoService.dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()))
+                .thenReturn(Constants.GET_UP_TIME_CANNOT_BE_LESS_THAN_SLEEP_TIME.toString());
+
+
+        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+//        multiValueMap.add("id", "1");
+        multiValueMap.add("sleepDateTime", "2022-01-01 21:20");
+        multiValueMap.add("getUpDateTime", "2022-01-01 05:20");
+
+        mockMvc.perform(post("/")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .params(multiValueMap)).andExpect(redirectedUrl("/create"));
+
+    }
+
+    @Test
+    void shouldCreateEntry() throws Exception, DateAndTimeNeedsToBeUnique {
+        SleepInfo sleepInfo = SleepInfo.builder()
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-02 05:20", dateFormatter))
+                .build();
+
+        SleepInfo saveSleepInfo = SleepInfo.builder()
+                .id(1L)
+                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .getUpDateTime(LocalDateTime.parse("2022-01-02 05:20", dateFormatter))
+                .build();
+
+        when(sleepInfoService.dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()))
+                .thenReturn("");
+
+        when(sleepInfoService.createEntry(sleepInfo)).thenReturn(saveSleepInfo);
+
+        MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+        multiValueMap.add("sleepDateTime", "2022-01-01 21:20");
+        multiValueMap.add("getUpDateTime", "2022-01-02 05:20");
+
+        mockMvc.perform(post("/")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .params(multiValueMap)).andExpect(redirectedUrl("/"));
+
+        verify(sleepInfoService, times(1)).createEntry(sleepInfo);
     }
 }

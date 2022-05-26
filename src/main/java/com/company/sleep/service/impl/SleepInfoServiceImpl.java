@@ -30,7 +30,7 @@ public class SleepInfoServiceImpl implements SleepInfoService {
                 return updateEntry(sleepInfo, sleepInfo.getId());
             }
 
-            if ("" != dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime())){
+            if ("" != dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime())) {
                 throw new GetUpTimeLessThanSleepTime();
             }
 
@@ -38,7 +38,7 @@ public class SleepInfoServiceImpl implements SleepInfoService {
 
                 calculateHours(sleepInfo);
             }
-           return sleepInfoRepository.save(sleepInfo);
+            return sleepInfoRepository.save(sleepInfo);
         } catch (DataIntegrityViolationException exception) {
             throw new DateAndTimeNeedsToBeUnique();
         }
@@ -60,7 +60,7 @@ public class SleepInfoServiceImpl implements SleepInfoService {
     @Override
     public SleepInfo updateEntry(SleepInfo sleepInfo, Long id) {
 
-        if ("" != dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime())){
+        if ("" != dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime())) {
             throw new GetUpTimeLessThanSleepTime();
         }
 

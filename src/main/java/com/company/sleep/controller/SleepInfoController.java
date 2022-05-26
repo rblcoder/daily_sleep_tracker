@@ -3,10 +3,11 @@ package com.company.sleep.controller;
 import com.company.sleep.exception.DateAndTimeNeedsToBeUnique;
 import com.company.sleep.model.SleepInfo;
 import com.company.sleep.service.SleepInfoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -19,8 +20,8 @@ import java.util.Objects;
 @Controller
 public class SleepInfoController {
 
-
     private final SleepInfoService sleepInfoService;
+    Logger logger = LoggerFactory.getLogger(SleepInfoController.class);
 
     public SleepInfoController(SleepInfoService sleepInfoService) {
         this.sleepInfoService = sleepInfoService;
@@ -34,11 +35,14 @@ public class SleepInfoController {
     }
 
     @PostMapping("/")
-    public String saveEntry(@ModelAttribute("sleepInfo") SleepInfo sleepInfo,
+    public String saveEntry(SleepInfo sleepInfo, Model model,
                             RedirectAttributes redirectAttributes, HttpSession session)
             throws DateAndTimeNeedsToBeUnique {
         String message = sleepInfoService
                 .dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime());
+        logger.info("*****  " + message);
+        logger.info("*****  " + sleepInfo);
+
         if (!Objects.equals(message, "")) {
 
             if (sleepInfo.getId() == null) {
@@ -51,7 +55,6 @@ public class SleepInfoController {
                 redirectAttributes.addFlashAttribute("message", message);
                 return "redirect:/update/" + sleepInfo.getId();
             }
-
 
         }
         sleepInfoService.createEntry(sleepInfo);
