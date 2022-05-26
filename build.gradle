@@ -58,28 +58,28 @@ jacoco {
 
 }
 
-//jacocoTestCoverageVerification {
-//	violationRules {
-//		rule {
-//			enabled = true
-//			limit {
-//				counter = 'BRANCH'
-//				minimum = 0.80
-//			}
-//			excludes = []
-//		}
-//
-//		rule {
-//			enabled = true
-//			limit {
-//				counter = 'LINE'
-//				minimum = 0.80
-//			}
-//			excludes = []
-//		}
-//	}
-//}
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			enabled = true
+			limit {
+				counter = 'BRANCH'
+				minimum = 0.80
+			}
+			excludes = []
+		}
+
+		rule {
+			enabled = true
+			limit {
+				counter = 'LINE'
+				minimum = 0.80
+			}
+			excludes = []
+		}
+	}
+}
 test {
 	finalizedBy jacocoTestReport // report is always generated after tests run
 }
-//jacocoTestCoverageVerification.dependsOn jacocoTestReport
+jacocoTestCoverageVerification.dependsOn jacocoTestReport

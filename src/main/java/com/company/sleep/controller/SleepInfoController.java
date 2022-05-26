@@ -3,8 +3,6 @@ package com.company.sleep.controller;
 import com.company.sleep.exception.DateAndTimeNeedsToBeUnique;
 import com.company.sleep.model.SleepInfo;
 import com.company.sleep.service.SleepInfoService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +19,6 @@ import java.util.Objects;
 public class SleepInfoController {
 
     private final SleepInfoService sleepInfoService;
-    Logger logger = LoggerFactory.getLogger(SleepInfoController.class);
 
     public SleepInfoController(SleepInfoService sleepInfoService) {
         this.sleepInfoService = sleepInfoService;
@@ -40,8 +37,7 @@ public class SleepInfoController {
             throws DateAndTimeNeedsToBeUnique {
         String message = sleepInfoService
                 .dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime());
-        logger.info("*****  " + message);
-        logger.info("*****  " + sleepInfo);
+
 
         if (!Objects.equals(message, "")) {
 
