@@ -1,5 +1,6 @@
 [![Java CI with Gradle](https://github.com/rblcoder/daily_sleep_tracker/actions/workflows/gradle.yml/badge.svg)](https://github.com/rblcoder/daily_sleep_tracker/actions/workflows/gradle.yml)
 
+JaCoCo Test Coverage  [![coverage](badges/jacoco.svg)](https://github.com/rblcoder/daily_sleep_tracker/actions/workflows/gradle.yml) [![branches coverage](badges/branches.svg)](https://github.com/rblcoder/daily_sleep_tracker/actions/workflows/gradle.yml)
 
 # DevProjects - Daily sleep tracker web app
 
