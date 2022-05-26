@@ -30,7 +30,7 @@ public class SleepInfoServiceImpl implements SleepInfoService {
                 return updateEntry(sleepInfo, sleepInfo.getId());
             }
 
-            if ("" != dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime())) {
+            if (!(Constants.EMPTY_MESSAGE.toString() == dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()))) {
                 throw new GetUpTimeLessThanSleepTime();
             }
 
@@ -60,7 +60,7 @@ public class SleepInfoServiceImpl implements SleepInfoService {
     @Override
     public SleepInfo updateEntry(SleepInfo sleepInfo, Long id) {
 
-        if ("" != dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime())) {
+        if (Constants.EMPTY_MESSAGE.toString() != dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime())) {
             throw new GetUpTimeLessThanSleepTime();
         }
 
@@ -91,7 +91,7 @@ public class SleepInfoServiceImpl implements SleepInfoService {
 
     @Override
     public String dateValidation(LocalDateTime sleepDateTime, LocalDateTime getUpDateTime) {
-        String message = "";
+        String message = Constants.EMPTY_MESSAGE.toString();
         if (sleepDateTime == null) {
             message = Constants.SLEEP_TIME_CANNOT_BE_EMPTY.toString();
         } else if (getUpDateTime != null && sleepDateTime.isAfter(getUpDateTime)) {

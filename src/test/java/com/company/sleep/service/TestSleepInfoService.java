@@ -59,10 +59,6 @@ public class TestSleepInfoService {
 
     @Test
     void givenExistingRecord_whenModifyingRecordWithGetUpTimeLessThanSleepTime_thenThrowException() {
-        SleepInfo sleepInfo = SleepInfo.builder()
-                .id(1L)
-                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
-                .build();
 
         SleepInfo toBeModifiedSleepInfo = SleepInfo.builder()
                 .id(1L)

@@ -1,5 +1,6 @@
 package com.company.sleep.controller;
 
+import com.company.sleep.config.Constants;
 import com.company.sleep.exception.DateAndTimeNeedsToBeUnique;
 import com.company.sleep.model.SleepInfo;
 import com.company.sleep.service.SleepInfoService;
@@ -32,14 +33,14 @@ public class SleepInfoController {
     }
 
     @PostMapping("/")
-    public String saveEntry(SleepInfo sleepInfo, Model model,
+    public String saveEntry(SleepInfo sleepInfo,
                             RedirectAttributes redirectAttributes, HttpSession session)
             throws DateAndTimeNeedsToBeUnique {
         String message = sleepInfoService
                 .dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime());
 
 
-        if (!Objects.equals(message, "")) {
+        if (!Objects.equals(message, Constants.EMPTY_MESSAGE.toString())) {
 
             if (sleepInfo.getId() == null) {
                 session.setAttribute("sleepInfo", sleepInfo);

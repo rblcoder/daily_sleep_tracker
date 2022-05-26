@@ -14,7 +14,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,10 +33,6 @@ public class TestSleepInfoController {
     private MockMvc mockMvc;
     @MockBean
     private SleepInfoServiceImpl sleepInfoService;
-
-    @Autowired
-    private WebApplicationContext context;
-
 
     @Test
     @WithMockUser
@@ -142,7 +137,7 @@ public class TestSleepInfoController {
                 .build();
 
         when(sleepInfoService.dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()))
-                .thenReturn("");
+                .thenReturn(Constants.EMPTY_MESSAGE.toString());
 
         when(sleepInfoService.createEntry(sleepInfo)).thenReturn(saveSleepInfo);
 
