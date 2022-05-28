@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -28,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 public class TestSleepInfoController {
 
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -57,7 +58,7 @@ public class TestSleepInfoController {
     void shouldLoadUpdateEntryPage() throws Exception {
         SleepInfo sleepInfo = SleepInfo.builder()
                 .id(1L)
-                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
+                .sleepDateTime(LocalDateTime.parse("2022-01-01T21:20", dateFormatter))
                 .build();
 
         when(sleepInfoService.getEntryById(1L)).thenReturn(sleepInfo);
@@ -80,10 +81,12 @@ public class TestSleepInfoController {
     @Test
     @WithMockUser
     void whenUpdatedEntryIncorrect_shouldRedirectToUpdate() throws Exception {
+        String sleepTime = "2022-01-01T21:20";
+        String getUpTime = "2022-01-01T05:20";
         SleepInfo sleepInfo = SleepInfo.builder()
                 .id(1L)
-                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
-                .getUpDateTime(LocalDateTime.parse("2022-01-01 05:20", dateFormatter))
+                .sleepDateTime(LocalDateTime.parse(sleepTime, dateFormatter))
+                .getUpDateTime(LocalDateTime.parse(getUpTime, dateFormatter))
                 .build();
         when(sleepInfoService.dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()))
                 .thenReturn(Constants.GET_UP_TIME_CANNOT_BE_LESS_THAN_SLEEP_TIME.toString());
@@ -91,8 +94,8 @@ public class TestSleepInfoController {
 
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
         multiValueMap.add("id", "1");
-        multiValueMap.add("sleepDateTime", "2022-01-01 21:20");
-        multiValueMap.add("getUpDateTime", "2022-01-01 05:20");
+        multiValueMap.add("sleepDateTime", sleepTime);
+        multiValueMap.add("getUpDateTime", getUpTime);
 
         mockMvc.perform(post("/")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -104,9 +107,11 @@ public class TestSleepInfoController {
     @Test
     @WithMockUser
     void whenCreateEntryIncorrect_shouldRedirectToCreate() throws Exception {
+        String sleepTime = "2022-01-01T21:20";
+        String getUpTime = "2022-01-01T05:20";
         SleepInfo sleepInfo = SleepInfo.builder()
-                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
-                .getUpDateTime(LocalDateTime.parse("2022-01-01 05:20", dateFormatter))
+                .sleepDateTime(LocalDateTime.parse(sleepTime, dateFormatter))
+                .getUpDateTime(LocalDateTime.parse(getUpTime, dateFormatter))
                 .build();
         when(sleepInfoService.dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()))
                 .thenReturn(Constants.GET_UP_TIME_CANNOT_BE_LESS_THAN_SLEEP_TIME.toString());
@@ -114,8 +119,8 @@ public class TestSleepInfoController {
 
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
 
-        multiValueMap.add("sleepDateTime", "2022-01-01 21:20");
-        multiValueMap.add("getUpDateTime", "2022-01-01 05:20");
+        multiValueMap.add("sleepDateTime", sleepTime);
+        multiValueMap.add("getUpDateTime", getUpTime);
 
         mockMvc.perform(post("/")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -125,15 +130,17 @@ public class TestSleepInfoController {
 
     @Test
     void shouldCreateEntry() throws Exception, DateAndTimeNeedsToBeUnique {
+        String sleepTime = "2022-01-01T21:20";
+        String getUpTime = "2022-01-02T05:20";
         SleepInfo sleepInfo = SleepInfo.builder()
-                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
-                .getUpDateTime(LocalDateTime.parse("2022-01-02 05:20", dateFormatter))
+                .sleepDateTime(LocalDateTime.parse(sleepTime, dateFormatter))
+                .getUpDateTime(LocalDateTime.parse(getUpTime, dateFormatter))
                 .build();
 
         SleepInfo saveSleepInfo = SleepInfo.builder()
                 .id(1L)
-                .sleepDateTime(LocalDateTime.parse("2022-01-01 21:20", dateFormatter))
-                .getUpDateTime(LocalDateTime.parse("2022-01-02 05:20", dateFormatter))
+                .sleepDateTime(LocalDateTime.parse(sleepTime, dateFormatter))
+                .getUpDateTime(LocalDateTime.parse(getUpTime, dateFormatter))
                 .build();
 
         when(sleepInfoService.dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()))
@@ -142,8 +149,8 @@ public class TestSleepInfoController {
         when(sleepInfoService.createEntry(sleepInfo)).thenReturn(saveSleepInfo);
 
         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
-        multiValueMap.add("sleepDateTime", "2022-01-01 21:20");
-        multiValueMap.add("getUpDateTime", "2022-01-02 05:20");
+        multiValueMap.add("sleepDateTime", sleepTime);
+        multiValueMap.add("getUpDateTime", getUpTime);
 
         mockMvc.perform(post("/")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
