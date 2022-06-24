@@ -47,6 +47,14 @@ GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO sleep;
 I used Java 8, Intellij Idea, TablePlus to check the data 
 and a local postgreSQL instance
 
+## Activate profile
+Specify dev or prod in SPRING_PROFILES_ACTIVE environment variable
+
+## Enviroment variables
+Set SPRING_USERNAME, SPRING_PASSWORD environment variables to specify spring security user name and password
+
+Set DB_USERNAME, DB_PASSWORD when using postgresql
+
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
 
