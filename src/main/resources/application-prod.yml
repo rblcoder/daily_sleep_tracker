@@ -1,0 +1,20 @@
+spring:
+  security:
+    user:
+      name: ${SPRING_USERNAME}
+      password: ${SPRING_PASSWORD}
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sleep
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    url: jdbc:postgresql://localhost:5432/sleep
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  thymeleaf:
+    cache: false
+server:
+  error:
+    include-exception: true

@@ -1,0 +1,27 @@
+spring:
+  security:
+    user:
+      name: ${SPRING_USERNAME}
+      password: ${SPRING_PASSWORD}
+  datasource:
+    url: jdbc:h2:mem:test-db
+    driver-class-name: org.h2.Driver
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: default
+  h2:
+    console:
+      enabled: true
+  test:
+    database:
+      replace: none
+  sql:
+    init:
+      mode: always
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+  thymeleaf:
+    prefix: file:src/main/resources/templates/
+    cache: false
