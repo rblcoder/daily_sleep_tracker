@@ -18,3 +18,10 @@ spring:
 server:
   error:
     include-exception: true
+logging:
+  level:
+    net:
+      ttddyy:
+        dsproxy:
+          listener: debug
+

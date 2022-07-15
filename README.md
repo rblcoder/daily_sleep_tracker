@@ -19,14 +19,14 @@ The user can login, create, view, update and delete entries.
 from terminal:
 
 psql postgres
-CREATE ROLE sleep WITH LOGIN PASSWORD ‘somepassword’;
+CREATE ROLE sleep WITH LOGIN PASSWORD 'somepassword';
 
 \q	
 psql postgres -U sleep
 
 CREATE DATABASE sleep;
 
-ALTER ROLE library CREATEDB;
+ALTER ROLE sleep CREATEDB;
 
 psql postgres -U sleep
 
@@ -42,7 +42,6 @@ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO sleep;
 
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO sleep;
 
-
 ## Installation
 I used Java 8, Intellij Idea, TablePlus to check the data 
 and a local postgreSQL instance
@@ -50,10 +49,18 @@ and a local postgreSQL instance
 ## Activate profile
 Specify dev or prod in SPRING_PROFILES_ACTIVE environment variable
 
+Refer
+
+#### https://docs.spring.io/spring-boot/docs/2.7.1/reference/htmlsingle/#features.profiles
+#### https://www.baeldung.com/spring-profiles
+
 ## Enviroment variables
 Set SPRING_USERNAME, SPRING_PASSWORD environment variables to specify spring security user name and password
 
 Set DB_USERNAME, DB_PASSWORD when using postgresql
+## Database logging 
+https://vladmihalcea.com/log-sql-spring-boot/
+https://github.com/gavlyukovskiy/spring-boot-data-source-decorator
 
 ## License
 [MIT](https://choosealicense.com/licenses/mit/)
