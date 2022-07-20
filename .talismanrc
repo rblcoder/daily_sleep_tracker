@@ -1,0 +1,7 @@
+fileignoreconfig:
+- filename: src/main/resources/application-prod.yml
+  checksum: 80571752932cd51fe4bdb0a9434ae3d99a5eb2ee6ac156a177f07f631d46213d
+- filename: src/main/resources/application.yml
+  checksum: ebb740791e6af8a8d4d77d238b5f2c5071b6e813af8b2037e9c49173aa53394c
+version: ""
+

@@ -20,27 +20,20 @@ from terminal:
 
 psql postgres
 CREATE ROLE sleep WITH LOGIN PASSWORD 'somepassword';
+ALTER ROLE sleep CREATEDB;
 
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO sleep;
+
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO sleep;
+
+    
 \q	
 psql postgres -U sleep
 
 CREATE DATABASE sleep;
 
-ALTER ROLE sleep CREATEDB;
-
-psql postgres -U sleep
-
-CREATE DATABASE sleep;
-
-\q
-
-psql postgres
-
 \c sleep
 
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO sleep;
-
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO sleep;
 
 ## Installation
 I used Java 8, Intellij Idea, TablePlus to check the data 
