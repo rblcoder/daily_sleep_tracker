@@ -50,7 +50,7 @@ tasks.named('test') {
 jacocoTestReport {
 	dependsOn test // tests are required to run before generating the report
 	reports {
-		xml.enabled false
+		xml.enabled true
 		csv.enabled true
 		html.enabled true
 		html.destination file("$buildDir/reports/jacoco")
