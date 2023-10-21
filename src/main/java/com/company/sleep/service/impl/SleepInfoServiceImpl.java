@@ -1,102 +1,107 @@
-package com.company.sleep.service.impl;
+package com.company.sleep.controller;
 
 import com.company.sleep.config.Constants;
 import com.company.sleep.exception.DateAndTimeNeedsToBeUnique;
-import com.company.sleep.exception.GetUpTimeLessThanSleepTime;
-import com.company.sleep.exception.RecordNotFoundException;
 import com.company.sleep.model.SleepInfo;
-import com.company.sleep.repository.SleepInfoRepository;
 import com.company.sleep.service.SleepInfoService;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
-@Service
-public class SleepInfoServiceImpl implements SleepInfoService {
 
-    private final SleepInfoRepository sleepInfoRepository;
+@Controller
+public class SleepInfoController {
 
-    public SleepInfoServiceImpl(SleepInfoRepository sleepInfoRepository) {
-        this.sleepInfoRepository = sleepInfoRepository;
+    private final SleepInfoService sleepInfoService;
+
+    public SleepInfoController(SleepInfoService sleepInfoService) {
+        this.sleepInfoService = sleepInfoService;
     }
 
-    @Override
-    public SleepInfo createEntry(SleepInfo sleepInfo) throws DateAndTimeNeedsToBeUnique {
-        try {
-            if (sleepInfo.getId() != null) {
-                return updateEntry(sleepInfo, sleepInfo.getId());
+    @GetMapping("/")
+    public String home(Model model) {
+
+        model.addAttribute("entries", sleepInfoService.getAllEntries());
+        return "home";
+    }
+
+    @PostMapping("/")
+    public String saveEntry(SleepInfo sleepInfo,
+                            RedirectAttributes redirectAttributes, HttpSession session)
+            throws DateAndTimeNeedsToBeUnique {
+        String message = sleepInfoService
+                .dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime());
+
+
+        if (!Objects.equals(message, Constants.EMPTY_MESSAGE.toString())) {
+
+            if (sleepInfo.getId() == null) {
+                session.setAttribute("sleepInfo", sleepInfo);
+                redirectAttributes.addFlashAttribute("message", message);
+                return "redirect:/create";
+            } else {
+
+                session.setAttribute("sleepInfo", sleepInfo);
+                redirectAttributes.addFlashAttribute("message", message);
+                return "redirect:/update/" + sleepInfo.getId();
             }
 
-            if (!(Constants.EMPTY_MESSAGE.toString() == dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()))) {
-                throw new GetUpTimeLessThanSleepTime();
-            }
+        }
+        sleepInfoService.createEntry(sleepInfo);
 
-            if (sleepInfo.getGetUpDateTime() != null) {
+        return "redirect:/";
+    }
 
-                calculateHours(sleepInfo);
-            }
-            return sleepInfoRepository.save(sleepInfo);
-        } catch (DataIntegrityViolationException exception) {
-            throw new DateAndTimeNeedsToBeUnique();
+    @GetMapping("/create")
+    public String showCreateEntryForm(Model model, HttpServletRequest request) {
+
+        if (request.getSession().getAttribute("sleepInfo") == null) {
+            SleepInfo sleepInfo = new SleepInfo();
+            model.addAttribute("sleepInfo", sleepInfo);
+        } else {
+            model.addAttribute("sleepInfo", request.getSession().getAttribute("sleepInfo"));
+            request.getSession().removeAttribute("sleepInfo");
+
         }
 
+        return "create_entry";
     }
 
-    public void calculateHours(SleepInfo sleepInfo) {
-        sleepInfo.setHours(Duration.between(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime()).getSeconds()
-                / 3600);
-
-    }
-
-    @Override
-    public SleepInfo getEntryById(Long id) {
-
-        return sleepInfoRepository.findById(id).orElseThrow(RecordNotFoundException::new);
-    }
-
-    @Override
-    public SleepInfo updateEntry(SleepInfo sleepInfo, Long id) {
-
-        if (Constants.EMPTY_MESSAGE.toString() != dateValidation(sleepInfo.getSleepDateTime(), sleepInfo.getGetUpDateTime())) {
-            throw new GetUpTimeLessThanSleepTime();
+    @GetMapping("/update/{Id}")
+    public String showUpdateEntryForm(@PathVariable(value = "Id") Long Id, Model model,
+                                      HttpServletRequest request) {
+        if (request.getSession().getAttribute("sleepInfo") == null) {
+            SleepInfo sleepInfo = sleepInfoService.getEntryById(Id);
+            model.addAttribute("sleepInfo", sleepInfo);
+        } else {
+            model.addAttribute("sleepInfo", request.getSession().getAttribute("sleepInfo"));
+            request.getSession().removeAttribute("sleepInfo");
         }
-
-        SleepInfo dbSleepInfo = sleepInfoRepository.findById(id).orElseThrow(RecordNotFoundException::new);
-        dbSleepInfo.setSleepDateTime(sleepInfo.getSleepDateTime());
-
-        dbSleepInfo.setGetUpDateTime(sleepInfo.getGetUpDateTime());
-
-        if (dbSleepInfo.getGetUpDateTime() != null) {
-
-            calculateHours(dbSleepInfo);
-
-        }
-        return sleepInfoRepository.save(dbSleepInfo);
+        return "update_entry";
     }
 
-    @Override
-    public List<SleepInfo> getAllEntries() {
+    @GetMapping("/delete/{Id}")
+    public String deleteEntry(@PathVariable(value = "Id") Long Id) {
+        sleepInfoService.deleteEntryById(Id);
 
-        return sleepInfoRepository.findAllByOrderBySleepDateTimeDesc();
+        return "redirect:/";
     }
 
-    @Override
-    public void deleteEntryById(Long id) {
-        SleepInfo dbSleepInfo = sleepInfoRepository.findById(id).orElseThrow(RecordNotFoundException::new);
-        sleepInfoRepository.delete(dbSleepInfo);
+    @RequestMapping(value = "/upload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String fileUpload(@RequestParam("file") MultipartFile file) throws IOException {
+      File convertFile = new File("/var/tmp/"+file.getOriginalFilename());
+      convertFile.createNewFile();
+      FileOutputStream fout = new FileOutputStream(convertFile);
+      fout.write(file.getBytes());
+      fout.close();
+      return "File is upload successfully";
     }
 
-    @Override
-    public String dateValidation(LocalDateTime sleepDateTime, LocalDateTime getUpDateTime) {
-        String message = Constants.EMPTY_MESSAGE.toString();
-        if (sleepDateTime == null) {
-            message = Constants.SLEEP_TIME_CANNOT_BE_EMPTY.toString();
-        } else if (getUpDateTime != null && sleepDateTime.isAfter(getUpDateTime)) {
-            message = Constants.GET_UP_TIME_CANNOT_BE_LESS_THAN_SLEEP_TIME.toString();
-        }
-        return message;
-    }
 }
