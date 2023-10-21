@@ -94,4 +94,14 @@ public class SleepInfoController {
         return "redirect:/";
     }
 
+    @RequestMapping(value = "/upload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public String fileUpload(@RequestParam("file") MultipartFile file) throws IOException {
+      File convertFile = new File("/var/tmp/"+file.getOriginalFilename());
+      convertFile.createNewFile();
+      FileOutputStream fout = new FileOutputStream(convertFile);
+      fout.write(file.getBytes());
+      fout.close();
+      return "File is upload successfully";
+    }
+
 }
